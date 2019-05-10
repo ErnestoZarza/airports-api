@@ -15,7 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from django.conf.urls import include
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url('api/(?P<version>(v1|v2))/', include('airport_data_collector.urls')),
+    # url(r'^$',upload_data, name='file-upload'),
+    # url('upload-file',upload_data, name='file-upload'),
+    # url('test/',BaseViewTest, name='Tests')
 ]

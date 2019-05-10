@@ -38,8 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+
     # third party apps
-    'aiport_data_collector',
+    'airport_data_collector',
 ]
 
 MIDDLEWARE = [
