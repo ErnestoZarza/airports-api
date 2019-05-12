@@ -33,6 +33,8 @@ class Airport(models.Model):
 
     city = models.CharField(_('city'), max_length=255, blank=True)
 
+    country = models.CharField(_('city'), max_length=255, blank=True)
+
     latitude = models.FloatField(_('latitude'), blank=True)
 
     longitude = models.FloatField(_('longitude'), blank=True)
