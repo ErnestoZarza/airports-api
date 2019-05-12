@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload CSV</title>
+</head>
+<body>
+
+</body>
+</html>
+
+
+{% if messages %}
+    {% for message in messages %}
+        <div>
+            <strong>{{message|safe}}</strong>
+        </div>
+    {% endfor %}
+{% else %}
+{{order}}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token%}
+    <p> * We are assuming that the uploaded csv have a correct format and data</p>
+    <label> Upload a CSV File</label>
+    <input type="file" name="file">
+    <button type="submit"> Upload</button>
+    <p> * If your csv is big the process could take a few minutes</p>
+</form>
+{% endif %}
