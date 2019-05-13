@@ -13,13 +13,12 @@ class BaseViewTest(APITestCase):
     client = APIClient()
 
     @staticmethod
-    def create_asset(name, iata, icao, city, latitude,
-                     longitude, country):
+    def create_asset(name, iata, icao, city, country, latitude,
+                     longitude):
         slug = slugify(name)
         Airport.objects.create(name=name, iata=iata, icao=icao,
-                               city=city, latitude=latitude,
-                               longitude=longitude, country=country,
-                               slug=slug)
+                               city=city, country=country, latitude=latitude,
+                               longitude=longitude, slug=slug)
 
     def setUp(self):
         # add test data
@@ -36,19 +35,55 @@ class BaseViewTest(APITestCase):
                           "Berlin", "DE", 52.5597000122, 13.2876996994)
 
 
-class GetAllAssetsTest(BaseViewTest):
+class GetAllAirportsTest(BaseViewTest):
 
-    def test_get_all_assets(self):
+    def test_get_all_airports(self):
         """
-        This test ensures that all Assets added in the setUp method
-        exist when we make a GET request to the assets/ endpoint
+        This test ensures that all Airports added in the setUp method
+        exist when we make a GET request to the airports / endpoint
         """
         # hit the API endpoint
         response = self.client.get(
-            reverse("assets-all", kwargs={"version": "v1"})
+            reverse("airports-all", kwargs={"version": "v1"})
         )
         # fetch the data from db
         expected = Airport.objects.all()
         serialized = AirportSerializer(expected, many=True)
+        self.assertEqual(response.data, serialized.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class GetAirportsNameTest(BaseViewTest):
+
+    def test_get_airport_by_name(self):
+        """
+        This test ensures that all the Airports filtered by name added in the setUp method
+        exist when we make a GET request to the airports/ endpoint
+        """
+        # hit the API endpoint
+        response = self.client.get(
+            reverse("airports-name-list", kwargs={"version": "v1", "airport_name": "berlin"})
+        )
+        # fetch the data from db
+        expected = Airport.objects.search_by_name("berlin")
+        serialized = AirportSerializer(expected, many=True)
+        self.assertEqual(response.data, serialized.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class GetAirportsIATATest(BaseViewTest):
+
+    def test_get_airport_by_name(self):
+        """
+        This test ensures that all the Airports filtered by IATA added in the setUp method
+        exist when we make a GET request to the airports/ endpoint
+        """
+        # hit the API endpoint
+        response = self.client.get(
+            reverse("airports-iata-detail", kwargs={"version": "v1", "airport_iata": "txl"})
+        )
+        # fetch the data from db
+        expected = Airport.objects.search_by_iata("TXL").first()
+        serialized = AirportSerializer(expected)
         self.assertEqual(response.data, serialized.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
